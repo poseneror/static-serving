@@ -65,6 +65,15 @@ function onLoad() {
       const aid = decodedInstance.aid;
       const biToken = decodedInstance.biToken;
       const siteOwnerId = decodedInstance.siteOwnerId;
+
+      reportTrackerEvent({
+        referrer,
+        metaSiteId,
+        appDefId,
+        instanceId,
+        visitorId: aid,
+        eventType: 'siteEntry'
+      });
     });
 }
 
