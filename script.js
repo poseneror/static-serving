@@ -56,7 +56,7 @@ function reportTrackerEvent(eventParams) {
 function onLoad() {
   const decodedInstance = getDecodedInstance();
 
-  console.log('INFO: decoded instance', instance);
+  console.log('INFO: decoded instance', decodedInstance);
 
   getReferrer()
     .then(referrer => {
