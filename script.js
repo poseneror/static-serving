@@ -113,7 +113,17 @@ async function onLoad() {
     });
 
     const currentMember = await getCurrentMemberDetails();
-    console.log('signed in as', currentMember);
+    if(!currentMember) {
+        let loginInterval;
+        loginInterval = setInterval(() => {
+            if(currentMember) {
+                console.log('visitor has logged in as a member', currentMember);
+                clearInterval(loginInterval);
+            }
+        }, 2000);
+    } else {
+        console.log('signed in as', currentMember);
+    }
 
     onPageNavigation(target => {
         console.log('Navigated to:', target);
