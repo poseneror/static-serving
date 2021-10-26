@@ -99,7 +99,7 @@ async function onLoad() {
             instanceId,
             visitorId: aid,
             contactId: currentMember?.id,
-            eventType: 'siteEntry'
+            eventType: 'visited'
         });
         console.log('INFO: trackerResponse json', trackerResponse);
 
