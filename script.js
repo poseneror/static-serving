@@ -95,12 +95,12 @@ async function onLoad() {
     const decodedInstance = getDecodedInstance();
     let currentMember = await getCurrentMemberDetails();
 
-    handleReferrerLinkDistribution(currentMember);
-
     console.log('INFO: decoded instance', decodedInstance);
 
     const siteInfo = await getSiteInfo();
     const referrer = await getReferrer(siteInfo);
+
+    handleReferrerLinkDistribution(currentMember, siteInfo);
 
     if (referrer) {
         const {instanceId, appDefId, metaSiteId, signDate, demoMode, aid, biToken, siteOwnerId} = decodedInstance;
@@ -146,7 +146,7 @@ async function getCurrentMemberDetails() {
     })
 }
 
-function handleReferrerLinkDistribution(currentMember) {
+function handleReferrerLinkDistribution(currentMember, siteInfo) {
   const showLinkIfNeeded = (member) => {
     if (!isContactGotReferralLink(member.id)) {
       const referrerLink = `${siteInfo.baseUrl}/book-online?referrer=${member.id}`;
