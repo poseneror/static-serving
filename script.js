@@ -111,6 +111,17 @@ function onLoad() {
     .then(trackerResponse => {
       console.log('INFO: trackerResponse json', trackerResponse);
     });
+
+  console.log('on page change listener');
+  Wix.Worker.getSitePages((pages) => {
+      Wix.Worker.addEventListener('PAGE_NAVIGATION', (eventPayload) => {
+          const {toPage} = eventPayload;
+          const target = pages.find(page => page.id === toPage);
+          console.log('Navigated to:', target);
+      })
+  })
+
+
 }
 
 console.log('loaded script');
