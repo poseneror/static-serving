@@ -35,22 +35,52 @@ function getDecodedInstance() {
   return instance;
 }
 
+function crossDomainPost(targetURL, postData) {
+  // Add the iframe with a unique name
+  var iframe = document.createElement("iframe");
+  var uniqueString = "CHANGE_THIS_TO_SOME_UNIQUE_STRING";
+  document.body.appendChild(iframe);
+  iframe.style.display = "none";
+  iframe.contentWindow.name = uniqueString;
+
+  // construct a form with hidden inputs, targeting the iframe
+  var form = document.createElement("form");
+  form.target = uniqueString;
+  form.action = targetURL;
+  form.method = "POST";
+
+  // repeat for each parameter
+  for (param in postData) {
+    var input = document.createElement("input");
+    input.type = "hidden";
+    input.name = param;
+    input.value = postData[param];
+    form.appendChild(input);
+  }
+
+  document.body.appendChild(form);
+  form.submit();
+  form.remove();
+}
+
 function reportTrackerEvent(eventParams) {
   const trackerBackendURL = 'https://orp700.wixsite.com/bookings-clubs/_functions/trackerEvent';
 
-  return fetch(trackerBackendURL, {
-    method: 'POST',
-    mode: 'cors',
-    cache: 'no-cache',
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    body: JSON.stringify(eventParams) // body data type must match "Content-Type" header
-  })
-  .then(response => response.json());
+  crossDomainPost(trackerBackendURL, eventParams);
+
+  // return fetch(trackerBackendURL, {
+  //   method: 'POST',
+  //   mode: 'cors',
+  //   cache: 'no-cache',
+  //   credentials: 'same-origin', // include, *same-origin, omit
+  //   headers: {
+  //     'Content-Type': 'application/json'
+  //   },
+  //   redirect: 'follow', // manual, *follow, error
+  //   referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+  //   body: JSON.stringify(eventParams) // body data type must match "Content-Type" header
+  // })
+  // .then(response => response.json());
 }
 
 function onLoad() {
