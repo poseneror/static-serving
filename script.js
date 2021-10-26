@@ -1,4 +1,3 @@
-
 function getParameterByName(name, url) {
     name = name.replace(/[\[\]]/g, '\\$&');
     var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
@@ -9,125 +8,117 @@ function getParameterByName(name, url) {
 }
 
 function getReferrer() {
-  return new Promise(res => {
-    Wix.Worker.getSiteInfo(siteInfo => {
-      const hostUrl = siteInfo.url;
-      const referrer = getParameterByName('referrer', hostUrl);
-      console.log('referred by', referrer);
+    return new Promise(res => {
+        Wix.Worker.getSiteInfo(siteInfo => {
+            const hostUrl = siteInfo.url;
+            const referrer = getParameterByName('referrer', hostUrl);
+            console.log('referred by', referrer);
 
-      res(referrer);
-    });
-  })
+            res(referrer);
+        });
+    })
 }
 
 function getDecodedInstance() {
-  const queryParams = Object.fromEntries(new URLSearchParams(window.location.search).entries());
+    const queryParams = Object.fromEntries(new URLSearchParams(window.location.search).entries());
 
-  const encodedInstance = queryParams.instance;
+    const encodedInstance = queryParams.instance;
 
-  if (!encodedInstance) {
-    console.error('ERROR: failed to get instance');
-    return;
-  };
+    if (!encodedInstance) {
+        console.error('ERROR: failed to get instance');
+        return;
+    }
+    ;
 
-  const instance = JSON.parse(atob(encodedInstance.split('.')[1]));
+    const instance = JSON.parse(atob(encodedInstance.split('.')[1]));
 
-  return instance;
+    return instance;
 }
 
 function crossDomainPost(targetURL, postData) {
-  // Add the iframe with a unique name
-  var iframe = document.createElement("iframe");
-  var uniqueString = "CHANGE_THIS_TO_SOME_UNIQUE_STRING";
-  document.body.appendChild(iframe);
-  iframe.style.display = "none";
-  iframe.contentWindow.name = uniqueString;
+    // Add the iframe with a unique name
+    var iframe = document.createElement("iframe");
+    var uniqueString = "CHANGE_THIS_TO_SOME_UNIQUE_STRING";
+    document.body.appendChild(iframe);
+    iframe.style.display = "none";
+    iframe.contentWindow.name = uniqueString;
 
-  // construct a form with hidden inputs, targeting the iframe
-  var form = document.createElement("form");
-  form.target = uniqueString;
-  form.action = targetURL;
-  form.method = "POST";
+    // construct a form with hidden inputs, targeting the iframe
+    var form = document.createElement("form");
+    form.target = uniqueString;
+    form.action = targetURL;
+    form.method = "POST";
 
-  // repeat for each parameter
-  for (param in postData) {
-    var input = document.createElement("input");
-    input.type = "hidden";
-    input.name = param;
-    input.value = postData[param];
-    form.appendChild(input);
-  }
+    // repeat for each parameter
+    for (param in postData) {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = param;
+        input.value = postData[param];
+        form.appendChild(input);
+    }
 
-  document.body.appendChild(form);
-  form.submit();
-  form.remove();
+    document.body.appendChild(form);
+    form.submit();
+    form.remove();
 }
 
 function reportTrackerEvent(eventParams) {
-  const trackerBackendURL = 'https://orp700.wixsite.com/bookings-clubs/_functions/trackerEvent';
+    const trackerBackendURL = 'https://orp700.wixsite.com/bookings-clubs/_functions/trackerEvent';
 
-  crossDomainPost(trackerBackendURL, eventParams);
+    crossDomainPost(trackerBackendURL, eventParams);
 
-  // return fetch(trackerBackendURL, {
-  //   method: 'POST',
-  //   mode: 'cors',
-  //   cache: 'no-cache',
-  //   credentials: 'same-origin', // include, *same-origin, omit
-  //   headers: {
-  //     'Content-Type': 'application/json'
-  //   },
-  //   redirect: 'follow', // manual, *follow, error
-  //   referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-  //   body: JSON.stringify(eventParams) // body data type must match "Content-Type" header
-  // })
-  // .then(response => response.json());
+    // return fetch(trackerBackendURL, {
+    //   method: 'POST',
+    //   mode: 'cors',
+    //   cache: 'no-cache',
+    //   credentials: 'same-origin', // include, *same-origin, omit
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   redirect: 'follow', // manual, *follow, error
+    //   referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    //   body: JSON.stringify(eventParams) // body data type must match "Content-Type" header
+    // })
+    // .then(response => response.json());
 }
 
 async function onLoad() {
-  const decodedInstance = getDecodedInstance();
+    const decodedInstance = getDecodedInstance();
 
-  console.log('INFO: decoded instance', decodedInstance);
+    console.log('INFO: decoded instance', decodedInstance);
 
-  getReferrer()
-    .then(referrer => {
-      const instanceId = decodedInstance.instanceId;
-      const appDefId = decodedInstance.appDefId;
-      const metaSiteId = decodedInstance.metaSiteId;
-      const signDate = decodedInstance.signDate;
-      const demoMode = decodedInstance.demoMode;
-      const aid = decodedInstance.aid;
-      const biToken = decodedInstance.biToken;
-      const siteOwnerId = decodedInstance.siteOwnerId;
+    const referrer = await getReferrer();
+    if (referrer) {
+        const {instanceId, appDefId, signDate, demoMode, aid, biToken, siteOwnerId} = decodedInstance.instanceId;
 
-      return reportTrackerEvent({
-        referrer,
-        metaSiteId,
-        appDefId,
-        instanceId,
-        visitorId: aid,
-        eventType: 'siteEntry'
-      });
-    })
-    .then(trackerResponse => {
-      console.log('INFO: trackerResponse json', trackerResponse);
-    });
+        const trackerResponse = await reportTrackerEvent({
+            referrer,
+            metaSiteId,
+            appDefId,
+            instanceId,
+            visitorId: aid,
+            eventType: 'siteEntry'
+        });
+        console.log('INFO: trackerResponse json', trackerResponse);
 
-    const currentMember = await getCurrentMemberDetails();
-    if(!currentMember) {
-        let loginInterval;
-        loginInterval = setInterval(() => {
-            if(currentMember) {
-                console.log('visitor has logged in as a member', currentMember);
-                clearInterval(loginInterval);
-            }
-        }, 2000);
-    } else {
-        console.log('signed in as', currentMember);
+        const currentMember = await getCurrentMemberDetails();
+        if (!currentMember) {
+            let loginInterval;
+            loginInterval = setInterval(() => {
+                if (currentMember) {
+                    console.log('visitor has logged in as a member', currentMember);
+                    clearInterval(loginInterval);
+                }
+            }, 2000);
+        } else {
+            console.log('signed in as', currentMember);
+        }
+
+        onPageNavigation(target => {
+            console.log('Navigated to:', target);
+        })
     }
-
-    onPageNavigation(target => {
-        console.log('Navigated to:', target);
-    })
 }
 
 function onPageNavigation(callback) {
@@ -143,6 +134,7 @@ async function getCurrentMemberDetails() {
         Wix.Worker.currentMember(resolve);
     })
 }
+
 console.log('loaded script');
 
 onLoad();
