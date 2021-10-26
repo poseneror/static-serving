@@ -89,6 +89,7 @@ async function onLoad() {
 
     const referrer = await getReferrer();
     if (referrer) {
+        let currentMember = await getCurrentMemberDetails();
         const {instanceId, appDefId, metaSiteId, signDate, demoMode, aid, biToken, siteOwnerId} = decodedInstance.instanceId;
 
         const trackerResponse = await reportTrackerEvent({
@@ -97,11 +98,11 @@ async function onLoad() {
             appDefId,
             instanceId,
             visitorId: aid,
+            contactId: currentMember?.id,
             eventType: 'siteEntry'
         });
         console.log('INFO: trackerResponse json', trackerResponse);
 
-        let currentMember = await getCurrentMemberDetails();
         if (!currentMember) {
             let loginInterval;
             loginInterval = setInterval(async () => {
