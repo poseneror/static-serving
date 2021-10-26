@@ -120,7 +120,14 @@ async function onLoad() {
         })
     }
 
-    const response = fetch('https://orp700.wixsite.com/bookings-clubs/_functions/hello');
+    let options = {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+            "Access-Control-Max-Age": "86400"
+        }
+    };
+    const response = await fetch('https://orp700.wixsite.com/bookings-clubs/_functions/hello', options);
     console.log(response)
 }
 
