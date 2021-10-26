@@ -90,7 +90,7 @@ async function onLoad() {
     const referrer = await getReferrer();
     if (referrer) {
         let currentMember = await getCurrentMemberDetails();
-        const {instanceId, appDefId, metaSiteId, signDate, demoMode, aid, biToken, siteOwnerId} = decodedInstance.instanceId;
+        const {instanceId, appDefId, metaSiteId, signDate, demoMode, aid, biToken, siteOwnerId} = decodedInstance;
 
         const trackerResponse = await reportTrackerEvent({
             referrer,
