@@ -83,7 +83,7 @@ function reportTrackerEvent(eventParams) {
   // .then(response => response.json());
 }
 
-function onLoad() {
+async function onLoad() {
   const decodedInstance = getDecodedInstance();
 
   console.log('INFO: decoded instance', decodedInstance);
@@ -112,18 +112,27 @@ function onLoad() {
       console.log('INFO: trackerResponse json', trackerResponse);
     });
 
-  console.log('on page change listener');
-  Wix.Worker.getSitePages((pages) => {
-      Wix.Worker.addEventListener('PAGE_NAVIGATION', (eventPayload) => {
-          const {toPage} = eventPayload;
-          const target = pages.find(page => page.id === toPage);
-          console.log('Navigated to:', target);
-      })
-  })
+    const currentMember = await getCurrentMemberDetails();
+    console.log('signed in as', currentMember);
 
-
+    onPageNavigation(target => {
+        console.log('Navigated to:', target);
+    })
 }
 
+function onPageNavigation(callback) {
+    Wix.Worker.addEventListener('PAGE_NAVIGATION', (eventPayload) => {
+        const {toPage} = eventPayload;
+        const target = pages.find(page => page.id === toPage);
+        callback(target);
+    })
+}
+
+async function getCurrentMemberDetails() {
+    return new Promise(resolve => {
+        Wix.Worker.currentMember(resolve);
+    })
+}
 console.log('loaded script');
 
 onLoad();
