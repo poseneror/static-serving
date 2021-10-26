@@ -55,6 +55,9 @@ function reportTrackerEvent(eventParams) {
 
 function onLoad() {
   const decodedInstance = getDecodedInstance();
+
+  console.log('INFO: decoded instance', instance);
+
   getReferrer()
     .then(referrer => {
       const instanceId = decodedInstance.instanceId;
@@ -66,7 +69,7 @@ function onLoad() {
       const biToken = decodedInstance.biToken;
       const siteOwnerId = decodedInstance.siteOwnerId;
 
-      reportTrackerEvent({
+      return reportTrackerEvent({
         referrer,
         metaSiteId,
         appDefId,
@@ -74,6 +77,9 @@ function onLoad() {
         visitorId: aid,
         eventType: 'siteEntry'
       });
+    })
+    .then(trackerResponse => {
+      console.log('INFO: trackerResponse json', trackerResponse);
     });
 }
 
