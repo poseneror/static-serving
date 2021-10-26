@@ -128,15 +128,15 @@ async function onLoad() {
             "Access-Control-Max-Age": "86400"
         }
     };
-    const response = await fetch('https://orp700.wixsite.com/bookings-clubs/_functions/hello', options);
-    console.log(response)
+    // const response = await fetch('https://orp700.wixsite.com/bookings-clubs/_functions/hello', options);
+    // console.log(response)
 }
 
 function onPageNavigation(callback) {
     Wix.Worker.addEventListener('PAGE_NAVIGATION', (eventPayload) => {
         const {toPage} = eventPayload;
-        const target = pages.find(page => page.id === toPage);
-        callback(target);
+        // const target = pages.find(page => page.id === toPage);
+        // callback(target);
     })
 }
 
