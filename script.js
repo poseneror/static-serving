@@ -185,7 +185,8 @@ function handleReferrerLinkDistribution(currentMember) {
 
 function setContactGotReferralLinkCookie(contactId) {
   const cookie = `gotReferralLink${contactId}=true; max-age=${7 * 24 * 60 * 60}`;
-  document.cookie = cookie;
+  // disable for testing
+  // document.cookie = cookie;
 }
 
 function isContactGotReferralLink(contactId) {
