@@ -89,7 +89,7 @@ async function onLoad() {
 
     const referrer = await getReferrer();
     if (referrer) {
-        const {instanceId, appDefId, signDate, demoMode, aid, biToken, siteOwnerId} = decodedInstance.instanceId;
+        const {instanceId, appDefId, metaSiteId, signDate, demoMode, aid, biToken, siteOwnerId} = decodedInstance.instanceId;
 
         const trackerResponse = await reportTrackerEvent({
             referrer,
