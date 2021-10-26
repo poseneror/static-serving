@@ -38,7 +38,7 @@ function getDecodedInstance() {
 function reportTrackerEvent(eventParams) {
   const trackerBackendURL = 'https://orp700.wixsite.com/bookings-clubs/_functions/trackerEvent';
 
-  const response = await fetch(trackerBackendURL, {
+  return fetch(trackerBackendURL, {
     method: 'POST',
     mode: 'cors',
     cache: 'no-cache',
@@ -49,8 +49,8 @@ function reportTrackerEvent(eventParams) {
     redirect: 'follow', // manual, *follow, error
     referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
     body: JSON.stringify(eventParams) // body data type must match "Content-Type" header
-  });
-  return response.json();
+  })
+  .then(response => response.json());
 }
 
 function onLoad() {
