@@ -28,7 +28,6 @@ function getDecodedInstance() {
         console.error('ERROR: failed to get instance');
         return;
     }
-    ;
 
     const instance = JSON.parse(atob(encodedInstance.split('.')[1]));
 
@@ -120,6 +119,9 @@ async function onLoad() {
             console.log('Navigated to:', target);
         })
     }
+
+    const response = fetch('https://orp700.wixsite.com/bookings-clubs/_functions/hello');
+    console.log(response)
 }
 
 function onPageNavigation(callback) {
