@@ -102,10 +102,11 @@ async function onLoad() {
         });
         console.log('INFO: trackerResponse json', trackerResponse);
 
-        const currentMember = await getCurrentMemberDetails();
+        let currentMember = await getCurrentMemberDetails();
         if (!currentMember) {
             let loginInterval;
-            loginInterval = setInterval(() => {
+            loginInterval = setInterval(async () => {
+                currentMember = await getCurrentMemberDetails();
                 if (currentMember) {
                     console.log('visitor has logged in as a member', currentMember);
                     clearInterval(loginInterval);
