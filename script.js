@@ -10,11 +10,7 @@ function getParameterByName(name, url) {
 function getSiteInfo() {
     return new Promise(res => {
         Wix.Worker.getSiteInfo(siteInfo => {
-            const hostUrl = siteInfo.url;
-            const referrer = getParameterByName('referrer', hostUrl);
-            console.log('referred by', referrer);
-
-            res(referrer);
+          res(siteInfo);
         });
     })
 }
@@ -152,8 +148,7 @@ function handleReferrerLinkDistribution(currentMember, siteInfo) {
       const referrerLink = `${siteInfo.baseUrl}/book-online?referrer=${member.id}`;
 
       alert(`
-      YoYoYo
-      U wanna b reach $$$$ ?
+      YoYoYo, wanna b reach $$$$ ?
       The ONLY thing you MUST do is
       Send this link to EVERYONE, and then...
       And then yull get the $$$$$$$$$
