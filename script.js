@@ -7,7 +7,7 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-function getReferrer() {
+function getSiteInfo() {
     return new Promise(res => {
         Wix.Worker.getSiteInfo(siteInfo => {
             const hostUrl = siteInfo.url;
@@ -17,6 +17,15 @@ function getReferrer() {
             res(referrer);
         });
     })
+}
+
+async function getReferrer(siteInfo) {
+    const hostUrl = siteInfo.url;
+    const referrer = getParameterByName('referrer', hostUrl);
+
+    console.log('referred by', referrer);
+
+    return referrer;
 }
 
 function getDecodedInstance() {
@@ -84,12 +93,16 @@ function reportTrackerEvent(eventParams) {
 
 async function onLoad() {
     const decodedInstance = getDecodedInstance();
+    let currentMember = await getCurrentMemberDetails();
+
+    handleReferrerLinkDistribution(currentMember);
 
     console.log('INFO: decoded instance', decodedInstance);
 
-    const referrer = await getReferrer();
+    const siteInfo = await getSiteInfo();
+    const referrer = await getReferrer(siteInfo);
+
     if (referrer) {
-        let currentMember = await getCurrentMemberDetails();
         const {instanceId, appDefId, metaSiteId, signDate, demoMode, aid, biToken, siteOwnerId} = decodedInstance;
 
         const trackerResponse = await reportTrackerEvent({
@@ -103,31 +116,18 @@ async function onLoad() {
         });
         console.log('INFO: trackerResponse json', trackerResponse);
 
-        if (!currentMember) {
-            let loginInterval;
-            loginInterval = setInterval(async () => {
-                currentMember = await getCurrentMemberDetails();
-                if (currentMember) {
-                    console.log('visitor has logged in as a member', currentMember);
-                    clearInterval(loginInterval);
-                }
-            }, 2000);
-        } else {
-            console.log('signed in as', currentMember);
-        }
-
-        onPageNavigation(target => {
-            console.log('Navigated to:', target);
-        })
+        // onPageNavigation(target => {
+        //     console.log('Navigated to:', target);
+        // })
     }
 
-    let options = {
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-            "Access-Control-Max-Age": "86400"
-        }
-    };
+    // let options = {
+    //     headers: {
+    //         "Access-Control-Allow-Origin": "*",
+    //         "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+    //         "Access-Control-Max-Age": "86400"
+    //     }
+    // };
     // const response = await fetch('https://orp700.wixsite.com/bookings-clubs/_functions/hello', options);
     // console.log(response)
 }
@@ -144,6 +144,52 @@ async function getCurrentMemberDetails() {
     return new Promise(resolve => {
         Wix.Worker.currentMember(resolve);
     })
+}
+
+function handleReferrerLinkDistribution(currentMember) {
+  const showLinkIfNeeded = (member) => {
+    if (!isContactGotReferralLink(member.id)) {
+      const referrerLink = `${siteInfo.baseUrl}/book-online?referrer=${member.id}`;
+
+      alert(`
+      YoYoYo
+      U wanna b reach $$$$ ?
+      The ONLY thing you MUST do is
+      Send this link to EVERYONE, and then...
+      And then yull get the $$$$$$$$$
+      
+      Oh and here is that magic link i promised
+      ${referrerLink}
+      `);
+
+      setContactGotReferralLinkCookie(member.id);
+    }
+  };
+
+  if (!currentMember) {
+    let loginInterval;
+    loginInterval = setInterval(async () => {
+      const loggedInMember = await getCurrentMemberDetails();
+      if (loggedInMember) {
+        console.log('visitor has logged in as a member', loggedInMember);
+        clearInterval(loginInterval);
+
+        showLinkIfNeeded(loggedInMember);
+      }
+    }, 2000);
+  } else {
+    console.log('signed in as', currentMember);
+    showLinkIfNeeded(currentMember);
+  }
+};
+
+function setContactGotReferralLinkCookie(contactId) {
+  const cookie = `gotReferralLink${contactId}=true; max-age=${7 * 24 * 60 * 60}`;
+  document.cookie = cookie;
+}
+
+function isContactGotReferralLink(contactId) {
+  return !!document.cookie.split('; ').find(row => row.startsWith(`gotReferralLink${contactId}`));
 }
 
 console.log('loaded script');
