@@ -49,7 +49,7 @@ function crossDomainPost(targetURL, postData) {
 
     // construct a form with hidden inputs, targeting the iframe
     var form = document.createElement("form");
-    form.target = uniqueString;
+    form.target = '_blank'; //uniqueString;
     form.action = targetURL;
     form.method = "POST";
 
