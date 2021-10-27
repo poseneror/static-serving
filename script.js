@@ -49,7 +49,7 @@ function crossDomainPost(targetURL, postData) {
 
     // construct a form with hidden inputs, targeting the iframe
     var form = document.createElement("form");
-    form.target = '_blank'; //uniqueString;
+    form.target = uniqueString;
     form.action = targetURL;
     form.method = "POST";
 
@@ -150,10 +150,8 @@ function handleReferrerLinkDistribution(currentMember, siteInfo) {
       alert(`
       YoYoYo, wanna b reach $$$$ ?
       The ONLY thing you MUST do is
-      Send this link to EVERYONE, and then...
-      And then yull get the $$$$$$$$$
-      
-      Oh and here is that magic link i promised
+      Send this link to EVERYONE you know
+      Here you go, you can thank me later
       ${referrerLink}
       `);
 
