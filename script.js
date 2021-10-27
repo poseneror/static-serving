@@ -178,7 +178,7 @@ function handleReferrerLinkDistribution(currentMember, siteInfo) {
 };
 
 function setContactGotReferralLinkCookie(contactId) {
-  const cookie = `gotReferralLink${contactId}=true; max-age=${7 * 24 * 60 * 60}`;
+  const cookie = `gotReferralLink${contactId}=true; max-age=${7 * 24 * 60 * 60}; SameSite=None; Secure`;
   document.cookie = cookie;
 }
 
