@@ -96,7 +96,7 @@ async function onLoad() {
     const siteInfo = await getSiteInfo();
     const referrer = await getReferrer(siteInfo);
 
-    handleReferrerLinkDistribution(currentMember, siteInfo);
+    // handleReferrerLinkDistribution(currentMember, siteInfo);
 
     if (referrer) {
         const {instanceId, appDefId, metaSiteId, signDate, demoMode, aid, biToken, siteOwnerId} = decodedInstance;
