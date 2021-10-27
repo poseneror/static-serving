@@ -147,14 +147,13 @@ function handleReferrerLinkDistribution(currentMember, siteInfo) {
     if (!isContactGotReferralLink(member.id)) {
       const referrerLink = `${siteInfo.baseUrl}/book-online?referrer=${member.id}`;
 
-      alert(`
-      YoYoYo, wanna b reach $$$$ ?
-      The ONLY thing you MUST do is
-      Send this link to EVERYONE you know
-      Here you go, you can thank me later
-
-      ${referrerLink}
-      `);
+      prompt(`
+        YoYoYo, wanna b reach $$$$ ?
+        The ONLY thing you MUST do is
+        Send this link to EVERYONE you know
+        Here you go, you can thank me later`,
+        referrerLink
+      );
 
       setContactGotReferralLinkCookie(member.id);
     }
