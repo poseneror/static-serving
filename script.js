@@ -152,7 +152,7 @@ function handleReferrerLinkDistribution(currentMember, siteInfo) {
       The ONLY thing you MUST do is
       Send this link to EVERYONE you know
       Here you go, you can thank me later
-      
+
       ${referrerLink}
       `);
 
@@ -179,8 +179,7 @@ function handleReferrerLinkDistribution(currentMember, siteInfo) {
 
 function setContactGotReferralLinkCookie(contactId) {
   const cookie = `gotReferralLink${contactId}=true; max-age=${7 * 24 * 60 * 60}`;
-  // disable for testing
-  // document.cookie = cookie;
+  document.cookie = cookie;
 }
 
 function isContactGotReferralLink(contactId) {
