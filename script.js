@@ -152,6 +152,7 @@ function handleReferrerLinkDistribution(currentMember, siteInfo) {
       The ONLY thing you MUST do is
       Send this link to EVERYONE you know
       Here you go, you can thank me later
+      
       ${referrerLink}
       `);
 
